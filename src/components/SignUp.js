@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 
 export default function SignUp() {
 	return (
-		<div class="container" style={{backgroundColor: "rgba(98, 131, 149, 0.7)", height: "77vh", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"}}>
+		<div class="container" style={{backgroundColor: "rgba(98, 131, 149, 0.5)", height: "77vh", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"}}>
 		<div class="container" style={{width: "22%", }}>
 			<Form style={{paddingTop: "11%"}}>
 			<Form.Text className="text-dark text-center" >

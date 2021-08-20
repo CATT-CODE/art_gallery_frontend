@@ -18,7 +18,8 @@ export default function HomePage() {
 					`https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=11&q=cat`
 				);
 
-				let randomPicUrlArr = [];
+				let randomPicData = [];
+
 				let i = 1;
 
 				while (i < 11) {
@@ -27,11 +28,16 @@ export default function HomePage() {
 							IDList
 						)}`
 					);
-					randomPicUrlArr.push(artData.data.primaryImageSmall);
+					randomPicData.push({
+						img: artData.data.primaryImageSmall,
+						title: artData.data.title,
+						date: artData.data.objectDate,
+						wiki: artData.data.objectWikidata_URL,
+					});
 					i++;
 				}
 
-				setImgURL(randomPicUrlArr);
+				setImgURL(randomPicData);
 			} catch (e) {
 				console.log(e);
 			}
@@ -43,7 +49,10 @@ export default function HomePage() {
 		<div>
 			<div
 				class="px-4 py-5 text-center container"
-				style={{ backgroundColor: "rgba(98, 131, 149, 0.7)" }}
+				style={{
+					backgroundColor: "rgba(98, 131, 149, 0.7)",
+					boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+				}}
 			>
 				<Carousel
 					fade
@@ -51,18 +60,18 @@ export default function HomePage() {
 				>
 					{imgURL.map((item) => {
 						return (
-							<Carousel.Item>
+							<Carousel.Item
+								onClick={() => window.open(item.wiki.toString())}
+							>
 								<img
 									className="d-block w-100"
-									src={item.toString()}
+									src={item.img.toString()}
 									alt="slide"
 									style={{ maxHeight: "775px", objectFit: "contain" }}
 								/>
 								<Carousel.Caption>
-									<h3>First slide label</h3>
-									<p>
-										Nulla vitae elit libero, a pharetra augue mollis interdum.
-									</p>
+									<h3>{item.title}</h3>
+									<h5>{item.date}</h5>
 								</Carousel.Caption>
 							</Carousel.Item>
 						);
