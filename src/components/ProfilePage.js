@@ -21,7 +21,7 @@ export default function ProfilePage(props) {
 	const user = useSelector((state) => state.user);
 
 	const [loading, setLoading] = useState(false);
-	const [imgInfo, setImgInfo] = useState([]);
+	const [favInfo, setFavInfo] = useState([]);
 	const [color, setColor] = useState("#ffffff");
 	// const [isFlipped, setIsFlipped] = useState(false);
 	// const [isFavorite, setIsFavorite] = useState(false);
@@ -29,33 +29,23 @@ export default function ProfilePage(props) {
 	useEffect(() => {
 		setLoading(true);
 
-		const randomID = (list) => {
-			return list.data.payload[
-				Math.floor(Math.random() * list.data.payload.length)
-			];
-		};
-
 		const fetchData = async () => {
 			try {
-				console.log("profile", user);
 				let IDList = await Axios.post('/users/favorites', {
 					email: user
 				}
 				);
 				let newIDList = IDList.data.payload
-				console.log(IDList);
 
-				let randomPicData = [];
+				let favPicData = [];
 
 				let i = 1;
 
-				while (i <= newIDList.length) {
+				while (i < newIDList.length + 1) {
 					let artData = await axios.get(
-						`https://collectionapi.metmuseum.org/public/collection/v1/objects/${randomID(
-							IDList
-						)}`
+						`https://collectionapi.metmuseum.org/public/collection/v1/objects/${newIDList[i]}`
 					);
-					randomPicData.push({
+					favPicData.push({
 						id: artData.data.objectID,
 						isFaved: false,
 						imgSml: artData.data.primaryImageSmall,
@@ -76,16 +66,15 @@ export default function ProfilePage(props) {
 					});
 					i++;
 				}
-				setImgInfo(randomPicData);
-				console.log(randomPicData);
-				console.log(imgInfo);
+				setFavInfo(favPicData);
+				console.log("asdf", favPicData);
 				setLoading(false);
 			} catch (e) {
 				console.log(e.message);
 			}
 		};
 		fetchData();
-	}, []);
+	}, [user]);
 
 	return (
 		<div>
@@ -127,7 +116,7 @@ export default function ProfilePage(props) {
 						<Alert variant="primary"><Alert.Heading>Favorite Page</Alert.Heading></Alert>
 					</div>
 						<div>
-							{imgInfo.map((e) => {
+							{favInfo.map((e) => {
 								return (
 									<div>
 										<Flippy
