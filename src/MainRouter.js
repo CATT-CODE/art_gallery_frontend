@@ -10,12 +10,15 @@ const HomePage = React.lazy(() => import("./components/HomePage"));
 const ExhibitPage = React.lazy(() => import("./components/ExhibitPage"));
 const SignUp = React.lazy(() => import("./components/SignUp"));
 const SignIn = React.lazy(() => import("./components/SignIn"));
+const ProfilePage = React.lazy(() => import("./components/ProfilePage"));
+const SearchResults = React.lazy(() => import("./components/SearchResults"));
 
 const override = css`
 	display: block;
 	margin: 0 auto;
 	margin-top: 25%;
 	border-color: #ffffff;
+	transform: rotate(45deg);
 `;
 
 export default function MainRouter() {
@@ -33,15 +36,17 @@ export default function MainRouter() {
 			</div>
 		}>
 			<div>
-				{/* <Provider store={reduxStore}> */}
+				<Provider store={reduxStore}>
 					<NavBar />
 					<Switch>
 						<Route exact path="/exhibit/:departmentID/:departmentName" component={ExhibitPage} />
 					<Route exact path="/" component={HomePage} />
+					<Route exact path="/favorites" component={ProfilePage} />
+					<Route exact path="/search/:searchInput" component={SearchResults} />
 					<Route exact path="/signup" component={SignUp} />
 					<Route exact path="/login" component={SignIn} />
 					</Switch>
-				{/* </Provider> */}
+				</Provider>
 			</div>
 		</React.Suspense>
 	);

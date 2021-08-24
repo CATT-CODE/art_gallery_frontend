@@ -13,6 +13,7 @@ const override = css`
 	margin: 0 auto;
 	margin-top: 30%;
 	border-color: #ffffff;
+	transform: rotate(45deg);
 `;
 export default function HomePage(props) {
 	const [imgInfo, setImgInfo] = useState([]);
@@ -25,6 +26,9 @@ export default function HomePage(props) {
 		speed: 500,
 		slidesToShow: 1,
 		slidesToScroll: 1,
+		prevArrow: <SamplePrevArrow />,
+		nextArrow: <SampleNextArrow />,
+		draggable: true,
 	};
 
 	const responsive = {
@@ -59,7 +63,7 @@ export default function HomePage(props) {
 			setLoading(true);
 			try {
 				let IDList = await axios.get(
-					`https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=11&q=cat`
+					`https://collectionapi.metmuseum.org/public/collection/v1/search?departmentId=11&q=paintings`
 				);
 
 				let randomPicData = [];
@@ -91,13 +95,36 @@ export default function HomePage(props) {
 		fetchData();
 	}, []);
 
+	function SamplePrevArrow(props) {
+		const { className, style, onClick } = props;
+		return (
+			<div
+				className={className}
+				style={{ ...style, paddingLeft: "0.5%", display: "block"}}
+				onClick={onClick}
+			/>
+		);
+	}
+	function SampleNextArrow(props) {
+		const { className, style, onClick } = props;
+		return (
+			<div
+				className={className}
+				style={{ ...style, paddingRight: "2%", display: "block"}}
+				onClick={onClick}
+			/>
+		);
+	}
+	
 	return (
 		<div>
 			<div
 				class="px-4 py-5 text-center container"
 				style={{
-					backgroundColor: "rgba(98, 131, 149, 0.7)",
-					boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+					backgroundColor: "rgba(98, 131, 149, 0.5)",
+					boxShadow:
+						"0 4px 18px 2px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+					borderRadius: "0 0 8px 8px",
 					height: "975px",
 				}}
 			>
@@ -139,8 +166,8 @@ export default function HomePage(props) {
 											largeImage: {
 												src: item.imgLrg.toString(),
 												alt: "slide",
-												height: 3000,
-												width: 3000,
+												height: 2500,
+												width: 2500,
 											},
 										}}
 									/>
@@ -164,7 +191,9 @@ export default function HomePage(props) {
 				class="px-4 py-5 text-center container"
 				style={{
 					backgroundColor: "rgba(107, 113, 126, 0.5)",
-					boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+					boxShadow:
+						"0 4px 18px 2px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+					borderRadius: "8px",
 					marginTop: "2%",
 					marginBottom: "2%",
 					height: "390px",
@@ -173,7 +202,7 @@ export default function HomePage(props) {
 				<Carousel
 					swipeable={false}
 					draggable={false}
-					showDots={true}
+					showDots={false}
 					responsive={responsive}
 					autoPlaySpeed={1000}
 					keyBoardControl={true}
@@ -187,7 +216,7 @@ export default function HomePage(props) {
 				>
 					<Card
 						style={{ width: "500px", height: "120%", cursor: "pointer" }}
-						onClick={() => props.history.push(`/exhibit/19`)}
+						onClick={() => props.history.push(`/exhibit/19/photographs`)}
 					>
 						<Row>
 							<Col>
@@ -199,7 +228,7 @@ export default function HomePage(props) {
 							</Col>
 							<Col>
 								<Card.Body style={{ textAlign: "left" }}>
-									<Card.Title>Photography</Card.Title>
+									<Card.Title>Photographs</Card.Title>
 									<Card.Text>
 										Established as an independent curatorial department in 1992,
 										the Department of Photographs houses a collection of over
@@ -212,7 +241,7 @@ export default function HomePage(props) {
 					</Card>
 					<Card
 						style={{ width: "500px", height: "130%", cursor: "pointer" }}
-						onClick={() => props.history.push(`/exhibit/11`)}
+						onClick={() => props.history.push(`/exhibit/11/paintings`)}
 					>
 						<Row>
 							<Col>
@@ -237,7 +266,7 @@ export default function HomePage(props) {
 					</Card>
 					<Card
 						style={{ width: "500px", height: "130%", cursor: "pointer" }}
-						onClick={() => props.history.push(`/exhibit/13`)}
+						onClick={() => props.history.push(`/exhibit/13/greek`)}
 					>
 						<Row>
 							<Col>
@@ -262,7 +291,7 @@ export default function HomePage(props) {
 					</Card>
 					<Card
 						style={{ width: "500px", height: "130%", cursor: "pointer" }}
-						onClick={() => props.history.push(`/exhibit/9`)}
+						onClick={() => props.history.push(`/exhibit/9/prints`)}
 					>
 						<Row>
 							<Col>

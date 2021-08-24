@@ -1,10 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { LOGOUT, SET_USER } from "../redux-state/actions";
+import { Button } from "react-bootstrap";
+import jwtDecode from "jwt-decode";
 
-export default function NavBar() {
+export default function NavBar(props) {
+	const form = useSelector((state) => state);
+	const dispatch = useDispatch();
+	const [searchInput, setSearchInput] = useState("")
+	const history = useHistory();
+
+	useEffect(() => {
+		let getJwtToken = localStorage.getItem("jwtToken");
+		if (getJwtToken) {
+			const currentTime = Date.now() / 1000;
+			let decodedJwtToken = jwtDecode(getJwtToken);
+			if (decodedJwtToken.exp < currentTime) {
+				dispatch({
+					type: LOGOUT,
+				});
+			} else {
+				dispatch({
+					type: SET_USER,
+					email: decodedJwtToken.email,
+				});
+			}
+		}
+	}, [form.user]);
+
+	// const logout = () => {
+	// props.history.push(`/`)
+	// 	dispatch({
+	// 		type: LOGOUT,
+	// 	});
+	// };
+
+	function handleSearchOnClick() {
+		history.push(`/search/${searchInput}`)
+	}
+
 	return (
-		<div >
-			<header class="p-3 text-white" style={{ backgroundColor: "#343A40", boxShadow: "0 4px 8px 0 rgba(0,0,0,.5)", position: "relative", zIndex: "10" }}>
-				<div class="container" >
+		<div>
+			<header
+				class="p-3 text-white"
+				style={{
+					backgroundColor: "#343A40",
+					boxShadow: "0 4px 8px 0 rgba(0,0,0,.5)",
+					position: "relative",
+					zIndex: "10",
+				}}
+			>
+				<div class="container">
 					<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 						<a
 							href="/"
@@ -17,7 +64,11 @@ export default function NavBar() {
 								x="0px"
 								y="0px"
 								viewBox="0 0 512 512"
-								style={{ enableBackground: "new 0 0 512 512", height: "32px", fill: "white" }}
+								style={{
+									enableBackground: "new 0 0 512 512",
+									height: "32px",
+									fill: "white",
+								}}
 							>
 								<g>
 									<g>
@@ -64,7 +115,7 @@ export default function NavBar() {
 			c2.429-5.455,12.882-12.252,28.16-14.692c3.502-0.559,6.929-0.831,10.203-0.831c10.594,0,19.571,2.843,24.205,7.962
 			c0.191,0.211,0.392,0.415,0.601,0.609c5.093,4.74,9.49,11.04,12.967,18.308c-7.418-3.965-15.881-7.244-24.47-8.049
 			c-5.246-0.483-9.968,3.166-10.806,8.364c-2.22,13.766-8.28,29.852-24.54,28.36C224.14,75.235,220.682,76.833,218.619,79.747z
-			 M316.832,362.724c4.382,7.321,8.124,14.498,9.708,19.806c9.76,32.712-9.642,90.491-16.634,109.471h-82.375
+			M316.832,362.724c4.382,7.321,8.124,14.498,9.708,19.806c9.76,32.712-9.642,90.491-16.634,109.471h-82.375
 			c53.261-26.881,74.895-66.134,83.542-96.267C314.484,383.845,316.152,372.597,316.832,362.724z M311.697,263.599h-42.076
 			c-5.523,0-10,4.477-10,10c0,5.523,4.477,10,10,10h29.546l-3.872,42.312c-1.072,3.641-9.13,27.778-39.611,51.68
 			c-4.346,3.408-5.107,9.694-1.699,14.039c3.408,4.347,9.695,5.106,14.039,1.699c12.485-9.791,21.752-19.682,28.594-28.65
@@ -98,33 +149,66 @@ export default function NavBar() {
 							</svg>
 						</a>
 
-						<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-							<li>
-								<a href="/login" class="nav-link px-2 text-primary">
-									Login
-								</a>
-							</li>
-							<li>
-								<a href="/signup" class="nav-link px-2 text-primary">
-									Sign Up
-								</a>
-							</li>
-						</ul>
+						{form.user === null ? (
+							<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+								<li>
+									<a href="/login" class="nav-link px-2 text-primary">
+										Login
+									</a>
+								</li>
+								<li>
+									<a href="/signup" class="nav-link px-2 text-primary">
+										Sign Up
+									</a>
+								</li>
+							</ul>
+						) : (
+							<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+								<li>
+									<a href="/favorites" class="nav-link px-2 text-primary">
+										{form.user}
+									</a>
+								</li>
+								<li>
+									<a
+										href="/"
+										onClick={() => {
+											
+											dispatch({
+												type: LOGOUT,
+											})
+										}}
+										class="nav-link px-2 text-primary"
+									>
+										Logout
+									</a>
+								</li>
+							</ul>
+						)}
 
-						<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+						<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" onSubmit={handleSearchOnClick}>
 							<input
 								type="search"
 								class="form-control form-control-dark"
 								placeholder="Search..."
 								aria-label="Search"
+								value={searchInput}
+								onChange={(e) => setSearchInput(e.target.value)}
+								required
 							/>
+							
 						</form>
-
 						<div class="text-end">
-							<button type="button" class="btn text-light" style={{backgroundColor: "#4A716A",}}>
-							Search
+							<button
+								type="button"
+								class="btn text-light"
+								style={{ backgroundColor: "#4A716A" }}
+								onClick={()=> handleSearchOnClick()}
+							>
+								Search
 							</button>
 						</div>
+
 					</div>
 				</div>
 			</header>
